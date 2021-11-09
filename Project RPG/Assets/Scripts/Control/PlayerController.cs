@@ -14,10 +14,11 @@ namespace RPG.Control
         private void Update()
         {
             if (InteractWithCombat()) return;
-            if (InteractWithMovement()) return; 
-            
+            if (InteractWithMovement()) return;
+
         }
 
+    
         private bool InteractWithCombat()
         {
             RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
@@ -43,7 +44,7 @@ namespace RPG.Control
             {
                 if (Input.GetMouseButton(0))
                 {
-                    GetComponent<Mover>().MoveTo(hit.point);
+                    GetComponent<Mover>().StartMoveAction(hit.point);
 
                 }
                 return true;
