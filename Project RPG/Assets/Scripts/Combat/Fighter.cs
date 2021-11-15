@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RPG.Movement;
 using RPG.Core;
+using System;
 
 namespace RPG.Combat
 {
@@ -12,7 +13,7 @@ namespace RPG.Combat
         [SerializeField] float timeBetweenAttacks = 1f;
         [SerializeField] float fistOneDamage = 1f;
         [SerializeField] float fistTwoDamage = 2f;
-        [SerializeField] float lastFistDamage = 5f;
+        [SerializeField] float lastFistDamage = 4f;
         Transform target;
         float timeSinceLastAttack = 0;
 
@@ -28,11 +29,7 @@ namespace RPG.Combat
             if (!GetIsInRange())
             {
                 GetComponent<Mover>().MoveTo(target.position);
-                if (target == null)
-                {
-                    animator.ResetTrigger("Attack 1");
-                }
-
+                // ResetTriggers();
             }
             else
             {
@@ -41,19 +38,34 @@ namespace RPG.Combat
             }
         }
 
+        // private void ResetTriggers()
+        // {
+        //     animator.ResetTrigger("Attack 1");
+        //     animator.ResetTrigger("Attack 2");
+        //     animator.ResetTrigger("Attack 3");
+        // }
+
         //Habilita la animacion de ataque
         private void AttackBehaviour()
         {
-
             AttackAnimation(animator);
-            if (timeSinceLastAttack > timeBetweenAttacks)
-            {
 
-                timeSinceLastAttack = 0;
-                // Health healthComponent = target.GetComponent<Health>();
 
-                // healthComponent.TakeDamage(weaponDamage);
-            }
+            //Ahora mismo no sirve para nada, porque no controlo bien el animador
+            //el resultado ahora mismo es el que quiero, pero en el futuro podría necesitar
+            //este codigo
+
+
+
+            // if (timeSinceLastAttack > timeBetweenAttacks)
+            // {
+            //     AttackAnimation(animator);
+            //     timeSinceLastAttack = 0;
+
+
+            // }
+
+
 
         }
 
@@ -62,8 +74,11 @@ namespace RPG.Combat
 
             animator = GetComponent<Animator>();
 
-            animator.SetTrigger("Attack 1");
-
+            //Aqui se llama a Hit()
+            if (GetIsInRange())
+            {
+                animator.SetTrigger("Attack 1");
+            }
             if (isPlaying(animator, "Attack 1"))
             {
                 animator.SetTrigger("Attack 2");
@@ -72,8 +87,8 @@ namespace RPG.Combat
             if (isPlaying(animator, "Attack 2"))
             {
                 animator.SetTrigger("Attack 3");
-
             }
+
         }
 
         private bool GetIsInRange()
@@ -93,10 +108,13 @@ namespace RPG.Combat
 
         }
 
-        //AnimationEvent Ignore!!!
+        //Cuando salta el evento de golpear de la animacion hace daño dependiendo
+        //del ataque o arma
         void Hit(float damage)
         {
             animator = GetComponent<Animator>();
+
+            if (target == null) return;
 
             Health healthComponent = target.GetComponent<Health>();
             if (isPlaying(animator, "Attack 1"))
