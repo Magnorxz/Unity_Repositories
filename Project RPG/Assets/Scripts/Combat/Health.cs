@@ -10,6 +10,12 @@ namespace RPG.Combat
         bool isDead = false;
         [SerializeField] float healthPoints = 100f;
 
+
+        public bool IsDead()
+        {
+            return isDead;
+        }
+
         public void TakeDamage(float damage)
         {
             animator = GetComponent<Animator>();

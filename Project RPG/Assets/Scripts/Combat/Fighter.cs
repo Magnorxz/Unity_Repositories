@@ -14,7 +14,7 @@ namespace RPG.Combat
         [SerializeField] float fistOneDamage = 1f;
         [SerializeField] float fistTwoDamage = 2f;
         [SerializeField] float lastFistDamage = 4f;
-        Transform target;
+        Health target;
         float timeSinceLastAttack = 0;
 
         Animator animator;
@@ -25,11 +25,14 @@ namespace RPG.Combat
             timeSinceLastAttack += Time.deltaTime;
 
             if (target == null) return;
-
+            if (target.IsDead())
+            {
+                Cancel();
+            }
             if (!GetIsInRange())
             {
-                GetComponent<Mover>().MoveTo(target.position);
-                // ResetTriggers();
+ 
+                GetComponent<Mover>().MoveTo(target.transform.position);
             }
             else
             {
@@ -38,12 +41,12 @@ namespace RPG.Combat
             }
         }
 
-        // private void ResetTriggers()
-        // {
-        //     animator.ResetTrigger("Attack 1");
-        //     animator.ResetTrigger("Attack 2");
-        //     animator.ResetTrigger("Attack 3");
-        // }
+        private void ResetTriggers()
+        {
+            animator.ResetTrigger("Attack 1");
+            animator.ResetTrigger("Attack 2");
+            animator.ResetTrigger("Attack 3");
+        }
 
         //Habilita la animacion de ataque
         private void AttackBehaviour()
@@ -67,6 +70,19 @@ namespace RPG.Combat
 
 
 
+        }
+
+        public bool CanAttack(CombatTarget combatTarget)
+        {
+            if (combatTarget == null || combatTarget.tag == "Player")
+            {
+                return false;
+            }
+            // if(combatTarget.tag == "Player"){
+            //     return false;
+            // }
+            Health targetToTest = combatTarget.GetComponent<Health>();
+            return targetToTest != null && !targetToTest.IsDead();
         }
 
         private void AttackAnimation(Animator animator)
@@ -93,17 +109,21 @@ namespace RPG.Combat
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.position) < weaponRange;
+            return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
+           
         }
 
         public void Attack(CombatTarget combatTarget)
         {
             GetComponent<ActionScheduler>().StartAction(this);
-            target = combatTarget.transform;
+            transform.LookAt(combatTarget.transform);
+            target = combatTarget.GetComponent<Health>();
         }
 
         public void Cancel()
         {
+            ResetTriggers();
+            GetComponent<Animator>().SetTrigger("StopAttack");
             target = null;
 
         }
@@ -115,19 +135,17 @@ namespace RPG.Combat
             animator = GetComponent<Animator>();
 
             if (target == null) return;
-
-            Health healthComponent = target.GetComponent<Health>();
             if (isPlaying(animator, "Attack 1"))
             {
-                healthComponent.TakeDamage(fistOneDamage);
+                target.TakeDamage(fistOneDamage);
             }
             if (isPlaying(animator, "Attack 2"))
             {
-                healthComponent.TakeDamage(fistTwoDamage);
+                target.TakeDamage(fistTwoDamage);
             }
             if (isPlaying(animator, "Attack 3"))
             {
-                healthComponent.TakeDamage(lastFistDamage);
+                target.TakeDamage(lastFistDamage);
             }
         }
 
