@@ -88,6 +88,7 @@
      <Compile Include="Assets\Scripts\Core\FollowCamera.cs" />
      <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\SuperCharacterController\Core\SuperCharacterController.cs" />
      <Compile Include="Assets\Scripts\Combat\Fighter.cs" />
+     <Compile Include="Assets\Scripts\Control\AIController.cs" />
      <None Include="Assets\Asset Packs\Synty - Polygon Student Sample\README - Usage Rights for these assets.txt" />
      <None Include="Assets\ExplosiveLLC\SuperCharacterController\SuperCharacterController\README.txt" />
     <Reference Include="UnityEngine">

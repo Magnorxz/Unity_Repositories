@@ -31,7 +31,7 @@ namespace RPG.Combat
             }
             if (!GetIsInRange())
             {
- 
+
                 GetComponent<Mover>().MoveTo(target.transform.position);
             }
             else
@@ -43,9 +43,17 @@ namespace RPG.Combat
 
         private void ResetTriggers()
         {
-            animator.ResetTrigger("Attack 1");
-            animator.ResetTrigger("Attack 2");
-            animator.ResetTrigger("Attack 3");
+            try
+            {
+                animator.ResetTrigger("Attack 1");
+                animator.ResetTrigger("Attack 2");
+                animator.ResetTrigger("Attack 3");
+            }
+            catch (NullReferenceException)
+            {
+
+            }
+
         }
 
         //Habilita la animacion de ataque
@@ -72,7 +80,7 @@ namespace RPG.Combat
 
         }
 
-        public bool CanAttack(CombatTarget combatTarget)
+        public bool CanAttack(GameObject combatTarget)
         {
             if (combatTarget == null || combatTarget.tag == "Player")
             {
@@ -83,6 +91,23 @@ namespace RPG.Combat
             // }
             Health targetToTest = combatTarget.GetComponent<Health>();
             return targetToTest != null && !targetToTest.IsDead();
+        }
+
+        public bool CanAIAttack(GameObject combatTarget)
+        {
+            if (combatTarget == null)
+            {
+                return false;
+            }
+            Health targetToTest = combatTarget.GetComponent<Health>();
+            return targetToTest != null && !targetToTest.IsDead();
+        }
+
+        public void Attack(GameObject combatTarget)
+        {
+            GetComponent<ActionScheduler>().StartAction(this);
+            transform.LookAt(combatTarget.transform);
+            target = combatTarget.GetComponent<Health>();
         }
 
         private void AttackAnimation(Animator animator)
@@ -109,23 +134,20 @@ namespace RPG.Combat
 
         private bool GetIsInRange()
         {
-            return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
-           
+
+            {
+                return Vector3.Distance(transform.position, target.transform.position) < weaponRange;
+            }
+
         }
 
-        public void Attack(CombatTarget combatTarget)
-        {
-            GetComponent<ActionScheduler>().StartAction(this);
-            transform.LookAt(combatTarget.transform);
-            target = combatTarget.GetComponent<Health>();
-        }
+
 
         public void Cancel()
         {
             ResetTriggers();
             GetComponent<Animator>().SetTrigger("StopAttack");
             target = null;
-
         }
 
         //Cuando salta el evento de golpear de la animacion hace daño dependiendo

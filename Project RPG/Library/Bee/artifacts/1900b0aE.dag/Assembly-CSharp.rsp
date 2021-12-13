@@ -365,6 +365,7 @@
 "Assets/Scripts/Combat/CombatTarget.cs"
 "Assets/Scripts/Combat/Fighter.cs"
 "Assets/Scripts/Combat/Health.cs"
+"Assets/Scripts/Control/AIController.cs"
 "Assets/Scripts/Control/PlayerController.cs"
 "Assets/Scripts/Core/ActionScheduler.cs"
 "Assets/Scripts/Core/FollowCamera.cs"
