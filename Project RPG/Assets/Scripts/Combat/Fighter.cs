@@ -15,7 +15,7 @@ namespace RPG.Combat
         [SerializeField] float fistTwoDamage = 2f;
         [SerializeField] float lastFistDamage = 4f;
         Health target;
-        float timeSinceLastAttack = 0;
+        float timeSinceLastAttack = Mathf.Infinity;
 
         Animator animator;
 
@@ -48,6 +48,7 @@ namespace RPG.Combat
                 animator.ResetTrigger("Attack 1");
                 animator.ResetTrigger("Attack 2");
                 animator.ResetTrigger("Attack 3");
+                
             }
             catch (NullReferenceException)
             {
